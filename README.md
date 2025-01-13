@@ -1,5 +1,5 @@
 # Pro Football Reference API [www.pro-football-reference.com/]
-Service GET requests for Pro Football Reference tables. Return in JSON format.
+Go api servicing GET requests for Pro Football Reference tables.
 <br/>
 <br/>
 <b>DNS Address </b>
