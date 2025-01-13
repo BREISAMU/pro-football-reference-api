@@ -16,8 +16,8 @@ Specify:
 - season (2003, 2024, etc.)
 */
 func getTeamHistory(c *gin.Context) {
-	team := c.Param("team")
-	year := c.Param("year")
+	team := c.Query("team")
+	year := c.Query("year")
 	year_int, err_atoi := strconv.Atoi(year)
 
 	if err_atoi != nil {
@@ -41,7 +41,7 @@ func getTeamHistory(c *gin.Context) {
 func main() {
 	router := gin.Default()
 
-	router.GET("/teamHistory/:team/:year", getTeamHistory)
+	router.GET("/teamHistory", getTeamHistory)
 
 	router.Run("localhost:8080")
 }
