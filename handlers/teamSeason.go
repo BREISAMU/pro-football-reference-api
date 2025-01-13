@@ -1,4 +1,4 @@
-package teamhistory
+package handlers
 
 import (
 	"fmt"
@@ -42,7 +42,7 @@ type SeasonOverlook struct {
 	DefensiveSrs       float64 `json:"defensiveSrs"`
 }
 
-func GetTeamHistory(url string, tableSelector string, year int) (SeasonOverlook, error) {
+func GetSeasonOverlook(url string, tableSelector string, year int) (SeasonOverlook, error) {
 	client := &http.Client{
 		Timeout: 4 * (time.Second + 8),
 	}
