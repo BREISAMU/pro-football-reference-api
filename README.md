@@ -1,8 +1,12 @@
-# Pro Football Reference API
-API allowing get requests for Pro Football Reference (https://www.pro-football-reference.com/) tables in JSON format.
+# Pro Football Reference     API [https://www.pro-football-reference.com/]
+Service GET requests for Pro Football Reference tables. Return in JSON format.
+
+<b>Current functionality:</b>:
+<br/>
+- /teams/TEAM_NAME
 <br/>
 
-### Example usage   [ GET teamHistory/atl/2015 ]
+### Example usage   [ GET teamHistory?team=atl/year=2015 ]
 ![plot](./images/rawTable.png)
 <br/><br/> -->
 <br/><br/>
@@ -39,3 +43,6 @@ API allowing get requests for Pro Football Reference (https://www.pro-football-r
     "defensiveSrs": 0.3
 }
 ```
+
+#
+(https://www.pro-football-reference.com/)
