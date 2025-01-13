@@ -4,25 +4,31 @@ import (
 	"log"
 	"net/http"
 	teamhistory "pfr/getFunctions"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 )
 
+/*
+Gets general history overlook, see "https://www.pro-football-reference.com/teams/" links
+Specify:
+- team (gnb, dal, jax, etc.)
+- season (2003, 2024, etc.)
+*/
 func getTeamHistory(c *gin.Context) {
-	// team := c.Param("team")
-	team := "gnb"
-	// year, err_atoi := strconv.Atoi(c.Param("year"))
+	team := c.Param("team")
+	year := c.Param("year")
+	year_int, err_atoi := strconv.Atoi(year)
 
-	year := 2000
-	// if err_atoi != nil {
-	// 	log.Println("Error parsing specified year.")
-	// 	return
-	// }
+	if err_atoi != nil {
+		log.Println("Error parsing specified year.")
+		return
+	}
 
 	url := "https://www.pro-football-reference.com/teams/" + team + "/"
 	tableSelector := "#team_index"
 
-	data, err := teamhistory.GetTeamHistory(url, tableSelector, year)
+	data, err := teamhistory.GetTeamHistory(url, tableSelector, year_int)
 
 	if err != nil {
 		log.Println("Error retrieving team history data.")
@@ -34,7 +40,8 @@ func getTeamHistory(c *gin.Context) {
 
 func main() {
 	router := gin.Default()
-	router.GET("/teamHistory", getTeamHistory)
+
+	router.GET("/teamHistory/:team/:year", getTeamHistory)
 
 	router.Run("localhost:8080")
 }
