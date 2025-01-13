@@ -34,7 +34,7 @@ type DraftPick struct {
 	ReceivingYds  int    `json:"receivingYds"`
 	ReceivingTDs  int    `json:"receivingTds"`
 	DefInts       int    `json:"defInts"`
-	DefSks        int    `json:"defSks"`
+	DefSacks      int    `json:"defSacks"`
 	College       string `json:"college"`
 }
 
@@ -177,7 +177,7 @@ func GetDraftYear(url string, tableSelector string, year int) ([]DraftPick, erro
 			ReceivingYds:  receivingYds,
 			ReceivingTDs:  receivingTds,
 			DefInts:       defInts,
-			DefSks:        defSks,
+			DefSacks:      defSks,
 			College:       college,
 		}
 
