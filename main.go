@@ -73,5 +73,5 @@ func main() {
 	router.GET("/team", getSeasonOverlook) // ?team=___&year=___
 	router.GET("/draft", getDraftYear)     // ?team=___&year=___
 
-	router.Run("localhost:8080")
+	router.Run()
 }
