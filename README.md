@@ -4,12 +4,12 @@ Go api servicing GET requests for Pro Football Reference tables.
 <br/>
 <b>DNS Address </b>
 ```
-DNS_BASE=ec2-18-118-33-121.us-east-2.compute.amazonaws.com
+BASE_URL=ec2-18-118-33-121.us-east-2.compute.amazonaws.com
 ```
 <b>Functioning Request Routes (more coming soon):</b>
 <br/>
-- $DNS_BASE/team?team=TEAM_NAME&year=YEAR
-- $DNS_BASE/TEAM_NAME/draft.htm
+- $BASE_URL/team?team=TEAM_NAME&year=YEAR
+- $BASE_URL/TEAM_NAME/draft.htm
 
 ## Example usage   
 ![plot](./images/rawTable.png)
