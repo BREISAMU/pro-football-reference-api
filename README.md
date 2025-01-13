@@ -1,14 +1,18 @@
 # Pro Football Reference     API [https://www.pro-football-reference.com/]
 Service GET requests for Pro Football Reference tables. Return in JSON format.
 
-<b>Current functionality:</b>:
+<b>Current link functionality on PFR:</b>:
 <br/>
 - /teams/TEAM_NAME
+- /TEAM_NAME/draft.htm
 <br/>
 
-### Example usage   [ GET teamHistory?team=atl/year=2015 ]
+### Example usage   
 ![plot](./images/rawTable.png)
-<br/><br/> -->
+```
+curl "$HOST_ADDRESS/team?team=atl/year=2015"
+```
+<br/> -->
 <br/><br/>
 ```
 {
