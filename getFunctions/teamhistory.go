@@ -43,24 +43,21 @@ type SeasonOverlook struct {
 }
 
 func GetTeamHistory(url string, tableSelector string, year int) (SeasonOverlook, error) {
-	// Create a custom client with reasonable timeouts
 	client := &http.Client{
-		Timeout: 30 * time.Second,
+		Timeout: 4 * (time.Second + 8),
 	}
 
-	// Maximum number of retries
-	maxRetries := 3
+	maxRetries := 2
 	var resp *http.Response
 	var err error
 
 	for attempt := 1; attempt <= maxRetries; attempt++ {
-		// Create a new request with headers
 		req, err := http.NewRequest("GET", url, nil)
 		if err != nil {
 			return SeasonOverlook{}, fmt.Errorf("error creating request: %v", err)
 		}
 
-		// Add headers to appear more like a browser
+		// Headers
 		req.Header.Set("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36")
 		req.Header.Set("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8")
 		req.Header.Set("Accept-Language", "en-US,en;q=0.5")
@@ -70,16 +67,15 @@ func GetTeamHistory(url string, tableSelector string, year int) (SeasonOverlook,
 			return SeasonOverlook{}, fmt.Errorf("error making request: %v", err)
 		}
 
-		// Check if we hit the rate limit
+		// Rate limit check
 		if resp.StatusCode == 429 {
 			resp.Body.Close()
 			if attempt == maxRetries {
 				return SeasonOverlook{}, fmt.Errorf("hit rate limit after %d attempts", maxRetries)
 			}
 
-			// Get retry delay from header or use default
 			retryAfter := resp.Header.Get("Retry-After")
-			waitTime := 60 * time.Second // default wait time
+			waitTime := 60 * time.Second
 			if retryAfter != "" {
 				if seconds, err := strconv.Atoi(retryAfter); err == nil {
 					waitTime = time.Duration(seconds) * time.Second
@@ -91,7 +87,7 @@ func GetTeamHistory(url string, tableSelector string, year int) (SeasonOverlook,
 			continue
 		}
 
-		// Break the retry loop if we got a good response
+		// Successful response
 		if resp.StatusCode == 200 {
 			break
 		}
@@ -102,7 +98,6 @@ func GetTeamHistory(url string, tableSelector string, year int) (SeasonOverlook,
 
 	defer resp.Body.Close()
 
-	// Rest of your existing scraping logic here...
 	doc, err := goquery.NewDocumentFromReader(resp.Body)
 	if err != nil {
 		return SeasonOverlook{}, fmt.Errorf("error parsing HTML: %v", err)
@@ -126,9 +121,6 @@ func GetTeamHistory(url string, tableSelector string, year int) (SeasonOverlook,
 
 	if len(season) == 0 {
 		return SeasonOverlook{}, fmt.Errorf("no data found for year %d", year)
-	}
-	if len(season) == 0 {
-		return SeasonOverlook{}, err
 	}
 
 	league := season[1]
