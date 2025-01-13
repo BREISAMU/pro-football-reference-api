@@ -1,16 +1,20 @@
-# Pro Football Reference     API [https://www.pro-football-reference.com/]
+# Pro Football Reference API [www.pro-football-reference.com/]
 Service GET requests for Pro Football Reference tables. Return in JSON format.
-
-<b>Current link functionality on PFR:</b>:
 <br/>
-- /teams/TEAM_NAME
-- /TEAM_NAME/draft.htm
 <br/>
+<b>DNS Address </b>
+```
+DNS_BASE=ec2-18-118-33-121.us-east-2.compute.amazonaws.com
+```
+<b>Functioning Request Routes (more coming soon):</b>
+<br/>
+- $DNS_BASE/team?team=TEAM_NAME&year=YEAR
+- $DNS_BASE/TEAM_NAME/draft.htm
 
-### Example usage   
+## Example usage   
 ![plot](./images/rawTable.png)
 ```
-curl "$HOST_ADDRESS/team?team=atl/year=2015"
+curl "ec2-18-118-33-121.us-east-2.compute.amazonaws.com/team?team=atl/year=2015"
 ```
 <br/> -->
 <br/><br/>
