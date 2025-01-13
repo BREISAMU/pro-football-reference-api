@@ -1,1 +1,2 @@
-Route handlers used to retrieve data
+# GET handlers
+Handlers used to scrape data from Pro Football Reference
