@@ -14,7 +14,7 @@ det - Detroit Lions
 gnb - Green Bay Packers
 htx - Houston Texans
 clt - Indianapolis Colts
-jax - Jack
+jax - Jacksonville Jaguars
 kan - Kansas City Chiefs
 rai - Las Vegas Raiders
 sdg - San Diego Chargers
