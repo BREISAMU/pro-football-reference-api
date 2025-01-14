@@ -1,6 +1,8 @@
 archive.txt
 raw.html
-json/
-response/
 *.exe
-dockerbuild.txt
+
+## Build tools
+dockerbuild.*
+*.pem
+setup.sh
