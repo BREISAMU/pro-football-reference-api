@@ -190,8 +190,13 @@ func GetTeamYearStats(url string, tableSelector string) (Stats, Stats, Rankings,
 		drives, _ := strconv.Atoi(statGroup[23])
 		scoringDrivePercentage, _ := strconv.ParseFloat(statGroup[24], 64)
 		turnoverDrivePercentage, _ := strconv.ParseFloat(statGroup[25], 64)
-		averageStartPosition, _ := strconv.ParseFloat(statGroup[26], 64)
-		avgDriveLength, _ := strconv.ParseFloat(statGroup[27], 64)
+
+		averageStartPosition, _ := strconv.ParseFloat(statGroup[26][len(statGroup[26])-4:], 64)
+
+		hour, _ := strconv.ParseFloat(string(statGroup[27][0]), 64)
+		minute, _ := strconv.ParseFloat(statGroup[27][2:], 64)
+		avgDriveLength := hour + (minute / 60)
+
 		avgDrivePlays, _ := strconv.ParseFloat(statGroup[28], 64)
 		avgDriveYards, _ := strconv.ParseFloat(statGroup[29], 64)
 		avgDrivePoints, _ := strconv.ParseFloat(statGroup[30], 64)
