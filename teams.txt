@@ -33,3 +33,5 @@ tam - Tampa Bay Buccaneers
 oti - Tennessee Titans
 was - Washington Commanders
 ---------------------------------
+
+* Defunct franchises not featured (i.e. Akron Pros, Boston Yanks) not reflected here but can be found on pro-football-reference.com/teams. *
