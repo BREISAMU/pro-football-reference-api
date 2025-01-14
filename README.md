@@ -21,7 +21,7 @@ BASE_URL=ec2-18-118-33-121.us-east-2.compute.amazonaws.com
 ## Example usage   
 ![plot](./images/rawTable.png)
 ```
-curl "ec2-18-118-33-121.us-east-2.compute.amazonaws.com/team?team=atl/year=2015"
+curl "ec2-18-118-33-121.us-east-2.compute.amazonaws.com/team/?team=atl/year=2015"
 ```
 <br/> -->
 <br/><br/>
