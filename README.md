@@ -8,12 +8,15 @@ BASE_URL=ec2-18-118-33-121.us-east-2.compute.amazonaws.com
 ```
 <b>Functioning Request Routes</b> ( see [handlers](https://github.com/BREISAMU/pro-football-reference-api/tree/main/handlers) for further documentation ):
 <br/>
-- /team?team=TEAM_NAME&year=YEAR
-- /draft?team=TEAM_NAME&year=YEAR
-- /teamOffensiveStats?team=TEAM_NAME&year=YEAR
-- /teamDefensiveStats?team=TEAM_NAME&year=YEAR
-- /teamOffensiveRankings?team=TEAM_NAME&year=YEAR
-- /teamDefensiveRankings?team=TEAM_NAME&year=YEAR
+<h1>Teams</h1>
+<ul>
+    <li> /team?team=TEAM_NAME&year=YEAR</li>
+    <li> /draft?team=TEAM_NAME&year=YEAR</li>
+    <li> /teamOffensiveStats?team=TEAM_NAME&year=YEAR</li>
+    <li> /teamDefensiveStats?team=TEAM_NAME&year=YEAR</li>
+    <li> /teamOffensiveRankings?team=TEAM_NAME&year=YEAR</li>
+    <li> /teamDefensiveRankings?team=TEAM_NAME&year=YEAR</li>
+</ul>
 
 ## Example usage   
 ![plot](./images/rawTable.png)
