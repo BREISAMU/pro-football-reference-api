@@ -56,5 +56,5 @@ curl "ec2-18-118-33-121.us-east-2.compute.amazonaws.com/team?team=atl/year=2015"
 }
 ```
 
-#
-(https://www.pro-football-reference.com/)
+# Disclaimer / Credit
+All data used in this project is sourced from [Sports Reference LLC](https://www.sports-reference.com/?utm_source=sr&utm_medium=sr_xsite&utm_campaign=2023_01_srnav). Use of this API must comply with all conditions set forth by their [terms and conditions](https://www.sports-reference.com/termsofuse.html?__hstc=223721476.0095f109d09965649dce377d8f2cfafe.1734971558705.1736797649244.1736804227068.13&__hssc=223721476.35.1736804227068&__hsfp=424417210) and [scraping/bot guidelines](https://www.sports-reference.com/bot-traffic.html). PLEASE do not use this service to produce archives of SRL data or any other action prohibited by the terms and conditions of SRL. All use of this API stems from one instance, and is collectively subject to the individual rate limit put forth by SRL. Take reasonable measures to stay below the rate limit of 20 requests per minute or this service may be taken down.
