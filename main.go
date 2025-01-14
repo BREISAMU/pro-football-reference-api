@@ -79,7 +79,7 @@ func getTeamOffensiveStats(c *gin.Context) {
 	url := "https://www.pro-football-reference.com/teams/" + team + "/" + year + ".htm"
 	tableSelector := "#team_stats"
 
-	data, _, _, _, err := handlers.GetTeamYearStats(url, tableSelector)
+	data, _, _, _, err := handlers.GetTeamYearStats(url, tableSelector, year, team)
 
 	if err != nil {
 		log.Println("Error retrieving draft data.")
@@ -101,7 +101,7 @@ func getTeamDefensiveStats(c *gin.Context) {
 	url := "https://www.pro-football-reference.com/teams/" + team + "/" + year + ".htm"
 	tableSelector := "#team_stats"
 
-	_, data, _, _, err := handlers.GetTeamYearStats(url, tableSelector)
+	_, data, _, _, err := handlers.GetTeamYearStats(url, tableSelector, year, team)
 
 	if err != nil {
 		log.Println("Error retrieving draft data.")
@@ -123,7 +123,7 @@ func getTeamOffensiveRankings(c *gin.Context) {
 	url := "https://www.pro-football-reference.com/teams/" + team + "/" + year + ".htm"
 	tableSelector := "#team_stats"
 
-	_, _, data, _, err := handlers.GetTeamYearStats(url, tableSelector)
+	_, _, data, _, err := handlers.GetTeamYearStats(url, tableSelector, year, team)
 
 	if err != nil {
 		log.Println("Error retrieving draft data.")
@@ -145,7 +145,7 @@ func getTeamDefensiveRankings(c *gin.Context) {
 	url := "https://www.pro-football-reference.com/teams/" + team + "/" + year + ".htm"
 	tableSelector := "#team_stats"
 
-	_, _, _, data, err := handlers.GetTeamYearStats(url, tableSelector)
+	_, _, _, data, err := handlers.GetTeamYearStats(url, tableSelector, year, team)
 
 	if err != nil {
 		log.Println("Error retrieving draft data.")
@@ -158,12 +158,12 @@ func getTeamDefensiveRankings(c *gin.Context) {
 func main() {
 	router := gin.Default()
 
-	router.GET("/team", getSeasonOverlook)                         // ?team=___&year=___
-	router.GET("/draft", getDraftYear)                             // ?team=___&year=___
-	router.GET("/teamOffensiveStats", getTeamOffensiveStats)       // ?team=___&year=___
-	router.GET("/teamDefensiveStats", getTeamDefensiveStats)       // ?team=___&year=___
-	router.GET("/teamOffensiveRankings", getTeamOffensiveRankings) // ?team=___&year=___
-	router.GET("/teamDefensiveRankings", getTeamDefensiveRankings) // ?team=___&year=___
+	router.GET("/team/", getSeasonOverlook)                         // ?team=___&year=___
+	router.GET("/team/draft", getDraftYear)                         // ?team=___&year=___
+	router.GET("/team/offensiveStats", getTeamOffensiveStats)       // ?team=___&year=___
+	router.GET("/team/defensiveStats", getTeamDefensiveStats)       // ?team=___&year=___
+	router.GET("/team/offensiveRankings", getTeamOffensiveRankings) // ?team=___&year=___
+	router.GET("/team/defensiveRankings", getTeamDefensiveRankings) // ?team=___&year=___
 
 	router.Run()
 }
