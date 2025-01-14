@@ -11,6 +11,8 @@ import (
 )
 
 type Stats struct {
+	Team                    string  `json:"team"`
+	Year                    int     `json:"year"`
 	DataType                string  `json:"dataType"`
 	PointsFor               int     `json:"pointsFor"`
 	TotalYards              int     `json:"totalYards"`
@@ -46,6 +48,8 @@ type Stats struct {
 
 // int only rankings
 type Rankings struct {
+	Team                    string `json:"team"`
+	Year                    int    `json:"year"`
 	DataType                string `json:"dataType"`
 	PointsFor               int    `json:"pointsFor"`
 	TotalYards              int    `json:"totalYards"`
@@ -79,7 +83,7 @@ type Rankings struct {
 	AvgDrivePoints          int    `json:"avgDrivePoints"`
 }
 
-func GetTeamYearStats(url string, tableSelector string) (Stats, Stats, Rankings, Rankings, error) {
+func GetTeamYearStats(url string, tableSelector string, year string, team string) (Stats, Stats, Rankings, Rankings, error) {
 	// ---- CLIENT BOILERPLATE ----
 	client := &http.Client{
 		Timeout: 4 * (time.Second + 8),
@@ -164,6 +168,7 @@ func GetTeamYearStats(url string, tableSelector string) (Stats, Stats, Rankings,
 	for i := 2; i < 4; i++ {
 		statGroup := tableData[i]
 
+		dataYear, _ := strconv.Atoi(year)
 		dataType := statGroup[0]
 		pointsFor, _ := strconv.Atoi(statGroup[1])
 		totalYards, _ := strconv.Atoi(statGroup[2])
@@ -202,6 +207,8 @@ func GetTeamYearStats(url string, tableSelector string) (Stats, Stats, Rankings,
 		avgDrivePoints, _ := strconv.ParseFloat(statGroup[30], 64)
 
 		res := Stats{
+			Team:                    team,
+			Year:                    dataYear,
 			DataType:                dataType,
 			PointsFor:               pointsFor,
 			TotalYards:              totalYards,
@@ -241,6 +248,7 @@ func GetTeamYearStats(url string, tableSelector string) (Stats, Stats, Rankings,
 	for i := 4; i < 6; i++ {
 		statGroup := tableData[i]
 
+		dataYear, _ := strconv.Atoi(year)
 		dataType := statGroup[0]
 		pointsFor, _ := strconv.Atoi(statGroup[1])
 		totalYards, _ := strconv.Atoi(statGroup[2])
@@ -274,6 +282,8 @@ func GetTeamYearStats(url string, tableSelector string) (Stats, Stats, Rankings,
 		avgDrivePoints, _ := strconv.Atoi(statGroup[30])
 
 		res := Rankings{
+			Team:                    team,
+			Year:                    dataYear,
 			DataType:                dataType,
 			PointsFor:               pointsFor,
 			TotalYards:              totalYards,
