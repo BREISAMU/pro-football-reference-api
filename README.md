@@ -6,9 +6,10 @@ Go api servicing GET requests for Pro Football Reference tables.
 ```
 BASE_URL=ec2-18-118-33-121.us-east-2.compute.amazonaws.com
 ```
+
 <b>Functioning Request Routes</b> ( see [handlers](https://github.com/BREISAMU/pro-football-reference-api/tree/main/handlers) for further documentation ):
-<br/>
-<h1>/team</h1>
+
+<p>/team</p>
 <ul>
     <li> /?team=TEAM_NAME&year=YEAR</li>
     <li> /draft/?team=TEAM_NAME&year=YEAR</li>
@@ -17,8 +18,9 @@ BASE_URL=ec2-18-118-33-121.us-east-2.compute.amazonaws.com
     <li> /offensiveRankings?team=TEAM_NAME&year=YEAR</li>
     <li> /defensiveRankings?team=TEAM_NAME&year=YEAR</li>
 </ul>
+<br/>
 
-## Example usage   
+# Example usage   
 ![plot](./images/rawTable.png)
 ```
 curl "ec2-18-118-33-121.us-east-2.compute.amazonaws.com/team/?team=atl/year=2015"
