@@ -168,6 +168,8 @@ func GetTeamYearStats(url string, tableSelector string, year string, team string
 	for i := 2; i < 4; i++ {
 		statGroup := tableData[i]
 
+		fmt.Println(len(statGroup))
+
 		dataYear, _ := strconv.Atoi(year)
 		dataType := statGroup[0]
 		pointsFor, _ := strconv.Atoi(statGroup[1])
@@ -192,19 +194,42 @@ func GetTeamYearStats(url string, tableSelector string, year string, team string
 		penalties, _ := strconv.Atoi(statGroup[20])
 		penaltyYards, _ := strconv.Atoi(statGroup[21])
 		penaltyFirstDowns, _ := strconv.Atoi(statGroup[22])
-		drives, _ := strconv.Atoi(statGroup[23])
-		scoringDrivePercentage, _ := strconv.ParseFloat(statGroup[24], 64)
-		turnoverDrivePercentage, _ := strconv.ParseFloat(statGroup[25], 64)
 
-		averageStartPosition, _ := strconv.ParseFloat(statGroup[26][len(statGroup[26])-4:], 64)
+		var drives int
+		var scoringDrivePercentage float64
+		var turnoverDrivePercentage float64
+		var averageStartPosition float64
+		var avgDriveLength float64
+		var avgDrivePlays float64
+		var avgDriveYards float64
+		var avgDrivePoints float64
+		if len(statGroup) > 23 {
+			drives, _ = strconv.Atoi(statGroup[23])
+			scoringDrivePercentage, _ = strconv.ParseFloat(statGroup[24], 64)
+			scoringDrivePercentage = scoringDrivePercentage / 100
 
-		hour, _ := strconv.ParseFloat(string(statGroup[27][0]), 64)
-		minute, _ := strconv.ParseFloat(statGroup[27][2:], 64)
-		avgDriveLength := hour + (minute / 60)
+			turnoverDrivePercentage, _ = strconv.ParseFloat(statGroup[25], 64)
+			turnoverDrivePercentage = turnoverDrivePercentage / 100
 
-		avgDrivePlays, _ := strconv.ParseFloat(statGroup[28], 64)
-		avgDriveYards, _ := strconv.ParseFloat(statGroup[29], 64)
-		avgDrivePoints, _ := strconv.ParseFloat(statGroup[30], 64)
+			averageStartPosition, _ = strconv.ParseFloat(statGroup[26][len(statGroup[26])-4:], 64)
+
+			hour, _ := strconv.ParseFloat(string(statGroup[27][0]), 64)
+			minute, _ := strconv.ParseFloat(statGroup[27][2:], 64)
+			avgDriveLength = hour + (minute / 60)
+
+			avgDrivePlays, _ = strconv.ParseFloat(statGroup[28], 64)
+			avgDriveYards, _ = strconv.ParseFloat(statGroup[29], 64)
+			avgDrivePoints, _ = strconv.ParseFloat(statGroup[30], 64)
+		} else {
+			drives = 0
+			scoringDrivePercentage = 0.0
+			turnoverDrivePercentage = 0.0
+			averageStartPosition = 0.0
+			avgDriveLength = 0.0
+			avgDrivePlays = 0.0
+			avgDriveYards = 0.0
+			avgDrivePoints = 0.0
+		}
 
 		res := Stats{
 			Team:                    team,
@@ -248,6 +273,8 @@ func GetTeamYearStats(url string, tableSelector string, year string, team string
 	for i := 4; i < 6; i++ {
 		statGroup := tableData[i]
 
+		fmt.Println(len(statGroup))
+
 		dataYear, _ := strconv.Atoi(year)
 		dataType := statGroup[0]
 		pointsFor, _ := strconv.Atoi(statGroup[1])
@@ -272,14 +299,34 @@ func GetTeamYearStats(url string, tableSelector string, year string, team string
 		penalties, _ := strconv.Atoi(statGroup[20])
 		penaltyYards, _ := strconv.Atoi(statGroup[21])
 		penaltyFirstDowns, _ := strconv.Atoi(statGroup[22])
-		drives, _ := strconv.Atoi(statGroup[23])
-		scoringDrivePercentage, _ := strconv.Atoi(statGroup[24])
-		turnoverDrivePercentage, _ := strconv.Atoi(statGroup[25])
-		averageStartPosition, _ := strconv.Atoi(statGroup[26])
-		avgDriveLength, _ := strconv.Atoi(statGroup[27])
-		avgDrivePlays, _ := strconv.Atoi(statGroup[28])
-		avgDriveYards, _ := strconv.Atoi(statGroup[29])
-		avgDrivePoints, _ := strconv.Atoi(statGroup[30])
+
+		var drives int
+		var scoringDrivePercentage int
+		var turnoverDrivePercentage int
+		var averageStartPosition int
+		var avgDriveLength int
+		var avgDrivePlays int
+		var avgDriveYards int
+		var avgDrivePoints int
+		if len(statGroup) > 23 {
+			drives, _ = strconv.Atoi(statGroup[23])
+			scoringDrivePercentage, _ = strconv.Atoi(statGroup[24])
+			turnoverDrivePercentage, _ = strconv.Atoi(statGroup[25])
+			averageStartPosition, _ = strconv.Atoi(statGroup[26])
+			avgDriveLength, _ = strconv.Atoi(statGroup[27])
+			avgDrivePlays, _ = strconv.Atoi(statGroup[28])
+			avgDriveYards, _ = strconv.Atoi(statGroup[29])
+			avgDrivePoints, _ = strconv.Atoi(statGroup[30])
+		} else {
+			drives = 0
+			scoringDrivePercentage = 0
+			turnoverDrivePercentage = 0
+			averageStartPosition = 0
+			avgDriveLength = 0
+			avgDrivePlays = 0
+			avgDriveYards = 0
+			avgDrivePoints = 0
+		}
 
 		res := Rankings{
 			Team:                    team,
