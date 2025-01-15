@@ -6,7 +6,7 @@ Go api servicing GET requests for Pro Football Reference tables.
 ```
 BASE_URL=ec2-18-118-33-121.us-east-2.compute.amazonaws.com
 ```
-*Active routes shown below. Include BASE_URL before route, or consult postman docs*
+*Active routes shown below. Include BASE_URL before route, or consult postman docs linked on header*
 
 
 
