@@ -1,4 +1,4 @@
-# Pro Football Reference API [www.pro-football-reference.com/]
+# Pro Football Reference API
 Go api servicing GET requests for Pro Football Reference tables.
 <br/>
 <br/>
