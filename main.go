@@ -155,6 +155,42 @@ func getTeamDefensiveRankings(c *gin.Context) {
 	c.IndentedJSON(http.StatusOK, data)
 }
 
+/*
+Gets standings by division, see "https://www.pro-football-reference.com/years/2022/" first table as example with param 2022
+Specify:
+- season (2003, 2024, etc.)
+*/
+func getDivisionStandings(c *gin.Context) {
+	year := c.Query("year")
+	url := "https://www.pro-football-reference.com/years/" + year + "/"
+	yearInt, err := strconv.Atoi(year)
+
+	if err != nil {
+		log.Println("Error parsing year.")
+		return
+	}
+
+	if yearInt < 1970 {
+		data, err := handlers.GetLeagueStandingsByYearPre1970(url)
+
+		if err != nil {
+			log.Println("Error retrieving standings data. (before 1970)")
+			return
+		}
+
+		c.IndentedJSON(http.StatusOK, data)
+	} else {
+		data, err := handlers.GetLeagueStandingsByYearPost1970(url)
+
+		if err != nil {
+			log.Println("Error retrieving standings data. (after 1970)")
+			return
+		}
+
+		c.IndentedJSON(http.StatusOK, data)
+	}
+}
+
 func main() {
 	router := gin.Default()
 
@@ -164,6 +200,7 @@ func main() {
 	router.GET("/team/defensiveStats", getTeamDefensiveStats)       // ?team=___&year=___
 	router.GET("/team/offensiveRankings", getTeamOffensiveRankings) // ?team=___&year=___
 	router.GET("/team/defensiveRankings", getTeamDefensiveRankings) // ?team=___&year=___
+	router.GET("/season/divStandings", getDivisionStandings)        // ?year=___
 
 	router.Run()
 }
