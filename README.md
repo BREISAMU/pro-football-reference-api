@@ -23,6 +23,13 @@ BASE_URL=ec2-18-118-33-121.us-east-2.compute.amazonaws.com
 </ul>
 <br/>
 
+[/season](https://www.postman.com/payload-engineer-77326474/pro-football-reference-api/documentation/qyfcscr/season)
+<ul>
+    <li> /divStandings?year=YEAR</li>
+</ul>
+<br/>
+
+
 # Example usage   
 ![plot](./images/rawTable.png)
 ```

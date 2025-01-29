@@ -21,7 +21,7 @@ func getSeasonOverlook(c *gin.Context) {
 	year_int, err_atoi := strconv.Atoi(year)
 
 	if err_atoi != nil {
-		log.Println("Error parsing specified year.")
+		log.Println(err_atoi)
 		return
 	}
 
@@ -31,7 +31,7 @@ func getSeasonOverlook(c *gin.Context) {
 	data, err := handlers.GetSeasonOverlook(url, tableSelector, year_int)
 
 	if err != nil {
-		log.Println("Error retrieving team history data.")
+		log.Println(err)
 		return
 	}
 
@@ -50,7 +50,7 @@ func getDraftYear(c *gin.Context) {
 	year_int, err_atoi := strconv.Atoi(year)
 
 	if err_atoi != nil {
-		log.Println("Error parsing specified year.")
+		log.Println(err_atoi)
 		return
 	}
 
@@ -60,7 +60,7 @@ func getDraftYear(c *gin.Context) {
 	data, err := handlers.GetDraftYear(url, tableSelector, year_int)
 
 	if err != nil {
-		log.Println("Error retrieving draft data.")
+		log.Println(err)
 		return
 	}
 
@@ -82,7 +82,7 @@ func getTeamOffensiveStats(c *gin.Context) {
 	data, _, _, _, err := handlers.GetTeamYearStats(url, tableSelector, year, team)
 
 	if err != nil {
-		log.Println("Error retrieving draft data.")
+		log.Println(err)
 		return
 	}
 
@@ -104,7 +104,7 @@ func getTeamDefensiveStats(c *gin.Context) {
 	_, data, _, _, err := handlers.GetTeamYearStats(url, tableSelector, year, team)
 
 	if err != nil {
-		log.Println("Error retrieving draft data.")
+		log.Println(err)
 		return
 	}
 
@@ -126,7 +126,7 @@ func getTeamOffensiveRankings(c *gin.Context) {
 	_, _, data, _, err := handlers.GetTeamYearStats(url, tableSelector, year, team)
 
 	if err != nil {
-		log.Println("Error retrieving draft data.")
+		log.Println(err)
 		return
 	}
 
@@ -148,11 +148,47 @@ func getTeamDefensiveRankings(c *gin.Context) {
 	_, _, _, data, err := handlers.GetTeamYearStats(url, tableSelector, year, team)
 
 	if err != nil {
-		log.Println("Error retrieving draft data.")
+		log.Println(err)
 		return
 	}
 
 	c.IndentedJSON(http.StatusOK, data)
+}
+
+/*
+Gets standings by division, see "https://www.pro-football-reference.com/years/2022/" first table as example with param 2022
+Specify:
+- season (2003, 2024, etc.)
+*/
+func getDivisionStandings(c *gin.Context) {
+	year := c.Query("year")
+	url := "https://www.pro-football-reference.com/years/" + year + "/"
+	yearInt, err := strconv.Atoi(year)
+
+	if err != nil {
+		log.Println(err)
+		return
+	}
+
+	if yearInt < 1970 {
+		data, err := handlers.GetLeagueStandingsByYearPre1970(url)
+
+		if err != nil {
+			log.Println(err)
+			return
+		}
+
+		c.IndentedJSON(http.StatusOK, data)
+	} else {
+		data, err := handlers.GetLeagueStandingsByYearPost1970(url)
+
+		if err != nil {
+			log.Println(err)
+			return
+		}
+
+		c.IndentedJSON(http.StatusOK, data)
+	}
 }
 
 func main() {
@@ -164,6 +200,7 @@ func main() {
 	router.GET("/team/defensiveStats", getTeamDefensiveStats)       // ?team=___&year=___
 	router.GET("/team/offensiveRankings", getTeamOffensiveRankings) // ?team=___&year=___
 	router.GET("/team/defensiveRankings", getTeamDefensiveRankings) // ?team=___&year=___
+	router.GET("/season/divStandings", getDivisionStandings)        // ?year=___
 
 	router.Run()
 }
