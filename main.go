@@ -21,7 +21,7 @@ func getSeasonOverlook(c *gin.Context) {
 	year_int, err_atoi := strconv.Atoi(year)
 
 	if err_atoi != nil {
-		log.Println("Error parsing specified year.")
+		log.Println(err_atoi)
 		return
 	}
 
@@ -31,7 +31,7 @@ func getSeasonOverlook(c *gin.Context) {
 	data, err := handlers.GetSeasonOverlook(url, tableSelector, year_int)
 
 	if err != nil {
-		log.Println("Error retrieving team history data.")
+		log.Println(err)
 		return
 	}
 
@@ -50,7 +50,7 @@ func getDraftYear(c *gin.Context) {
 	year_int, err_atoi := strconv.Atoi(year)
 
 	if err_atoi != nil {
-		log.Println("Error parsing specified year.")
+		log.Println(err_atoi)
 		return
 	}
 
@@ -60,7 +60,7 @@ func getDraftYear(c *gin.Context) {
 	data, err := handlers.GetDraftYear(url, tableSelector, year_int)
 
 	if err != nil {
-		log.Println("Error retrieving draft data.")
+		log.Println(err)
 		return
 	}
 
@@ -82,7 +82,7 @@ func getTeamOffensiveStats(c *gin.Context) {
 	data, _, _, _, err := handlers.GetTeamYearStats(url, tableSelector, year, team)
 
 	if err != nil {
-		log.Println("Error retrieving draft data.")
+		log.Println(err)
 		return
 	}
 
@@ -104,7 +104,7 @@ func getTeamDefensiveStats(c *gin.Context) {
 	_, data, _, _, err := handlers.GetTeamYearStats(url, tableSelector, year, team)
 
 	if err != nil {
-		log.Println("Error retrieving draft data.")
+		log.Println(err)
 		return
 	}
 
@@ -126,7 +126,7 @@ func getTeamOffensiveRankings(c *gin.Context) {
 	_, _, data, _, err := handlers.GetTeamYearStats(url, tableSelector, year, team)
 
 	if err != nil {
-		log.Println("Error retrieving draft data.")
+		log.Println(err)
 		return
 	}
 
@@ -148,7 +148,7 @@ func getTeamDefensiveRankings(c *gin.Context) {
 	_, _, _, data, err := handlers.GetTeamYearStats(url, tableSelector, year, team)
 
 	if err != nil {
-		log.Println("Error retrieving draft data.")
+		log.Println(err)
 		return
 	}
 
@@ -166,7 +166,7 @@ func getDivisionStandings(c *gin.Context) {
 	yearInt, err := strconv.Atoi(year)
 
 	if err != nil {
-		log.Println("Error parsing year.")
+		log.Println(err)
 		return
 	}
 
@@ -174,7 +174,7 @@ func getDivisionStandings(c *gin.Context) {
 		data, err := handlers.GetLeagueStandingsByYearPre1970(url)
 
 		if err != nil {
-			log.Println("Error retrieving standings data. (before 1970)")
+			log.Println(err)
 			return
 		}
 
@@ -183,7 +183,7 @@ func getDivisionStandings(c *gin.Context) {
 		data, err := handlers.GetLeagueStandingsByYearPost1970(url)
 
 		if err != nil {
-			log.Println("Error retrieving standings data. (after 1970)")
+			log.Println(err)
 			return
 		}
 

@@ -26,12 +26,16 @@ type TeamSeason struct {
 }
 
 type Conference struct {
-	Name string     `json:"name"`
-	Nfc  TeamSeason `json:"nfc"`
-	Afc  TeamSeason `json:"afc"`
+	Name      string     `json:"name"`
+	Divisions []Division `json:"divisions"`
 }
 
-func GetLeagueStandingsByYearPre1970(url string) ([]TeamSeason, error) {
+type Division struct {
+	Name  string       `json:"name"`
+	Teams []TeamSeason `json:"teams"`
+}
+
+func GetLeagueStandingsByYearPre1970(url string) ([]Conference, error) {
 	tableSelector := "#NFL"
 
 	// ---- CLIENT BOILERPLATE ----
@@ -46,7 +50,7 @@ func GetLeagueStandingsByYearPre1970(url string) ([]TeamSeason, error) {
 	for attempt := 1; attempt <= maxRetries; attempt++ {
 		req, err := http.NewRequest("GET", url, nil)
 		if err != nil {
-			return []TeamSeason{}, fmt.Errorf("error creating request: %v", err)
+			return []Conference{}, fmt.Errorf("error creating request: %v", err)
 		}
 
 		// Headers
@@ -56,14 +60,14 @@ func GetLeagueStandingsByYearPre1970(url string) ([]TeamSeason, error) {
 
 		resp, err = client.Do(req)
 		if err != nil {
-			return []TeamSeason{}, fmt.Errorf("error making request: %v", err)
+			return []Conference{}, fmt.Errorf("error making request: %v", err)
 		}
 
 		// Rate limit check
 		if resp.StatusCode == 429 {
 			resp.Body.Close()
 			if attempt == maxRetries {
-				return []TeamSeason{}, fmt.Errorf("hit rate limit after %d attempts", maxRetries)
+				return []Conference{}, fmt.Errorf("hit rate limit after %d attempts", maxRetries)
 			}
 
 			retryAfter := resp.Header.Get("Retry-After")
@@ -85,18 +89,19 @@ func GetLeagueStandingsByYearPre1970(url string) ([]TeamSeason, error) {
 		}
 
 		resp.Body.Close()
-		return []TeamSeason{}, fmt.Errorf("unexpected status code: %d", resp.StatusCode)
+		return []Conference{}, fmt.Errorf("unexpected status code: %d", resp.StatusCode)
 	}
 
 	defer resp.Body.Close()
 
 	doc, err := goquery.NewDocumentFromReader(resp.Body)
 	if err != nil {
-		return []TeamSeason{}, fmt.Errorf("error parsing HTML: %v", err)
+		return []Conference{}, fmt.Errorf("error parsing HTML: %v", err)
 	}
 
 	var tableData [][]string
-	var division []TeamSeason
+	nfl := Conference{"NFL", []Division{}}
+	divisionOfInterest := Division{"No", []TeamSeason{}}
 
 	// ---- END ----
 
@@ -105,6 +110,13 @@ func GetLeagueStandingsByYearPre1970(url string) ([]TeamSeason, error) {
 		row.Find("td, th").Each(func(j int, cell *goquery.Selection) {
 			rowData = append(rowData, cell.Text())
 		})
+
+		if len(rowData) == 1 {
+			if divisionOfInterest.Name != "No" {
+				nfl.Divisions = append(nfl.Divisions, divisionOfInterest)
+			}
+			divisionOfInterest = Division{rowData[0], []TeamSeason{}}
+		}
 
 		if len(rowData) > 1 && rowData[0] != "Tm" {
 			println(rowData[0])
@@ -143,19 +155,25 @@ func GetLeagueStandingsByYearPre1970(url string) ([]TeamSeason, error) {
 					DefensiveSrs:       defensiveSrs,
 				}
 
-				division = append(division, season)
+				divisionOfInterest.Teams = append(divisionOfInterest.Teams, season)
 			}
 		}
 	})
 
+	// catch hanging division
+	nfl.Divisions = append(nfl.Divisions, divisionOfInterest)
+
+	var league []Conference
+	league = append(league, nfl)
+
 	if len(tableData) < 1 {
-		return []TeamSeason{}, fmt.Errorf("no data found for selected year")
+		return []Conference{}, fmt.Errorf("no data found for selected year")
 	}
 
-	return division, nil
+	return league, nil
 }
 
-func GetLeagueStandingsByYearPost1970(url string) ([][]TeamSeason, error) {
+func GetLeagueStandingsByYearPost1970(url string) ([]Conference, error) {
 
 	// ---- CLIENT BOILERPLATE ----
 	client := &http.Client{
@@ -169,7 +187,7 @@ func GetLeagueStandingsByYearPost1970(url string) ([][]TeamSeason, error) {
 	for attempt := 1; attempt <= maxRetries; attempt++ {
 		req, err := http.NewRequest("GET", url, nil)
 		if err != nil {
-			return [][]TeamSeason{}, fmt.Errorf("error creating request: %v", err)
+			return []Conference{}, fmt.Errorf("error creating request: %v", err)
 		}
 
 		// Headers
@@ -179,14 +197,14 @@ func GetLeagueStandingsByYearPost1970(url string) ([][]TeamSeason, error) {
 
 		resp, err = client.Do(req)
 		if err != nil {
-			return [][]TeamSeason{}, fmt.Errorf("error making request: %v", err)
+			return []Conference{}, fmt.Errorf("error making request: %v", err)
 		}
 
 		// Rate limit check
 		if resp.StatusCode == 429 {
 			resp.Body.Close()
 			if attempt == maxRetries {
-				return [][]TeamSeason{}, fmt.Errorf("hit rate limit after %d attempts", maxRetries)
+				return []Conference{}, fmt.Errorf("hit rate limit after %d attempts", maxRetries)
 			}
 
 			retryAfter := resp.Header.Get("Retry-After")
@@ -208,20 +226,20 @@ func GetLeagueStandingsByYearPost1970(url string) ([][]TeamSeason, error) {
 		}
 
 		resp.Body.Close()
-		return [][]TeamSeason{}, fmt.Errorf("unexpected status code: %d", resp.StatusCode)
+		return []Conference{}, fmt.Errorf("unexpected status code: %d", resp.StatusCode)
 	}
 
 	defer resp.Body.Close()
 
 	doc, err := goquery.NewDocumentFromReader(resp.Body)
 	if err != nil {
-		return [][]TeamSeason{}, fmt.Errorf("error parsing HTML: %v", err)
+		return []Conference{}, fmt.Errorf("error parsing HTML: %v", err)
 	}
 
 	var tableData [][]string
-	var afc []TeamSeason
-	var nfc []TeamSeason
-	var league [][]TeamSeason
+	afc := Conference{"AFC", []Division{}}
+	nfc := Conference{"NFC", []Division{}}
+	divisionOfInterest := Division{"No", []TeamSeason{}}
 
 	// ---- END ----
 
@@ -232,6 +250,13 @@ func GetLeagueStandingsByYearPost1970(url string) ([][]TeamSeason, error) {
 			rowData = append(rowData, cell.Text())
 		})
 
+		if len(rowData) == 1 {
+			if divisionOfInterest.Name != "No" {
+				afc.Divisions = append(afc.Divisions, divisionOfInterest)
+			}
+			divisionOfInterest = Division{rowData[0], []TeamSeason{}}
+		}
+
 		if len(rowData) > 1 && rowData[0] != "Tm" {
 			tableData = append(tableData, rowData)
 			if err == nil {
@@ -268,10 +293,14 @@ func GetLeagueStandingsByYearPost1970(url string) ([][]TeamSeason, error) {
 					DefensiveSrs:       defensiveSrs,
 				}
 
-				nfc = append(nfc, season)
+				divisionOfInterest.Teams = append(divisionOfInterest.Teams, season)
 			}
 		}
 	})
+
+	afc.Divisions = append(afc.Divisions, divisionOfInterest)
+
+	divisionOfInterest.Name = "No"
 
 	// Get NFC tables
 	doc.Find("#NFC").Find("tr").Each(func(i int, row *goquery.Selection) {
@@ -280,6 +309,13 @@ func GetLeagueStandingsByYearPost1970(url string) ([][]TeamSeason, error) {
 			rowData = append(rowData, cell.Text())
 		})
 
+		if len(rowData) == 1 {
+			if divisionOfInterest.Name != "No" {
+				nfc.Divisions = append(nfc.Divisions, divisionOfInterest)
+			}
+			divisionOfInterest = Division{rowData[0], []TeamSeason{}}
+		}
+
 		if len(rowData) > 1 && rowData[0] != "Tm" {
 			tableData = append(tableData, rowData)
 			if err == nil {
@@ -316,16 +352,20 @@ func GetLeagueStandingsByYearPost1970(url string) ([][]TeamSeason, error) {
 					DefensiveSrs:       defensiveSrs,
 				}
 
-				afc = append(afc, season)
+				divisionOfInterest.Teams = append(divisionOfInterest.Teams, season)
 			}
 		}
 	})
 
+	// Get hanging team
+	nfc.Divisions = append(nfc.Divisions, divisionOfInterest)
+
+	var league []Conference
 	league = append(league, nfc)
 	league = append(league, afc)
 
-	if len(league[0]) < 1 {
-		return [][]TeamSeason{}, fmt.Errorf("no data found for selected year")
+	if len(league[0].Divisions) < 1 {
+		return []Conference{}, fmt.Errorf("no data found for selected year")
 	}
 
 	return league, nil
