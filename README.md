@@ -1,3 +1,4 @@
+![plot](./images/footballSpinning.gif)
 # Pro Football Reference API
 Go api servicing GET requests for Pro Football Reference tables.
 <br/>
