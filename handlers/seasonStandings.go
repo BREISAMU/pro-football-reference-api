@@ -236,12 +236,12 @@ func GetLeagueStandingsByYearPost1970(url string) ([]Conference, error) {
 		return []Conference{}, fmt.Errorf("error parsing HTML: %v", err)
 	}
 
+	// ---- END ----
+
 	var tableData [][]string
 	afc := Conference{"AFC", []Division{}}
 	nfc := Conference{"NFC", []Division{}}
 	divisionOfInterest := Division{"No", []TeamSeason{}}
-
-	// ---- END ----
 
 	// Get AFC tables
 	doc.Find("#AFC").Find("tr").Each(func(i int, row *goquery.Selection) {

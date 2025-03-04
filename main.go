@@ -204,21 +204,14 @@ func getDivisionStandings(c *gin.Context) {
 }
 
 /*
-Gets playoff results by year, see "https://www.pro-football-reference.com/years/1990/" playoff results table as example with param 1990
+Gets list of award winners for a season, see "https://www.pro-football-reference.com/years/2003/" award winners list with param 2003
 Specify:
 - season (2003, 2024, etc.)
 */
-func getPlayoffResults(c *gin.Context) {
+func getSeasonAwardWinners(c *gin.Context) {
 	year := c.Query("year")
 	url := "https://www.pro-football-reference.com/years/" + year + "/"
-	yearInt, err := strconv.Atoi(year)
-
-	if err != nil {
-		log.Println(err)
-		return
-	}
-
-	data, err := handlers.GetPlayoffResultsByYear(url, yearInt)
+	data, err := handlers.GetSeasonAwardWinners(url)
 
 	if err != nil {
 		log.Println(err)
@@ -226,18 +219,23 @@ func getPlayoffResults(c *gin.Context) {
 	}
 
 	c.IndentedJSON(http.StatusOK, data)
+
 }
 
 func main() {
 	router := gin.Default()
 
+	// Team
 	router.GET("/team/", getSeasonOverlook)                         // ?team=___&year=___
 	router.GET("/team/draft", getDraftYear)                         // ?team=___&year=___
 	router.GET("/team/offensiveStats", getTeamOffensiveStats)       // ?team=___&year=___
 	router.GET("/team/defensiveStats", getTeamDefensiveStats)       // ?team=___&year=___
 	router.GET("/team/offensiveRankings", getTeamOffensiveRankings) // ?team=___&year=___
 	router.GET("/team/defensiveRankings", getTeamDefensiveRankings) // ?team=___&year=___
-	router.GET("/season/divStandings", getDivisionStandings)        // ?year=___
-	router.GET("/season/playoffResults", getPlayoffResults)         // ?year=___
+
+	// Season
+	router.GET("/season/divStandings", getDivisionStandings) // ?year=___
+	router.GET("/season/awards", getSeasonAwardWinners)      // ?year=___
+
 	router.Run()
 }
