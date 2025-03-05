@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-	"os"
 	"regexp"
 	"strconv"
 	"strings"
@@ -19,10 +18,10 @@ type AwardWinner struct {
 }
 
 func GetSeasonAwardWinners(url string) ([]AwardWinner, error) {
+	// Begin client boilerplate
 	client := &http.Client{
-		Timeout: 32 * time.Second, // Fixed timeout calculation
+		Timeout: 32 * time.Second,
 	}
-
 	maxRetries := 2
 	var resp *http.Response
 	var err error
@@ -30,7 +29,7 @@ func GetSeasonAwardWinners(url string) ([]AwardWinner, error) {
 	for attempt := 1; attempt <= maxRetries; attempt++ {
 		req, err := http.NewRequest("GET", url, nil)
 		if err != nil {
-			return nil, fmt.Errorf("error creating request: %v", err)
+			return []AwardWinner{}, fmt.Errorf("error creating request: %v", err)
 		}
 
 		// Set headers to mimic a browser
@@ -40,14 +39,14 @@ func GetSeasonAwardWinners(url string) ([]AwardWinner, error) {
 
 		resp, err = client.Do(req)
 		if err != nil {
-			return nil, fmt.Errorf("error making request: %v", err)
+			return []AwardWinner{}, fmt.Errorf("error making request: %v", err)
 		}
 
 		// Handle rate limit (429)
 		if resp.StatusCode == 429 {
 			resp.Body.Close()
 			if attempt == maxRetries {
-				return nil, fmt.Errorf("hit rate limit after %d attempts", maxRetries)
+				return []AwardWinner{}, fmt.Errorf("hit rate limit after %d attempts", maxRetries)
 			}
 
 			retryAfter := resp.Header.Get("Retry-After")
@@ -73,46 +72,52 @@ func GetSeasonAwardWinners(url string) ([]AwardWinner, error) {
 	}
 
 	defer resp.Body.Close()
+	// End client boilerplate
 
 	doc, err := goquery.NewDocumentFromReader(resp.Body)
 	if err != nil {
-		return nil, fmt.Errorf("error parsing HTML: %v", err)
+		return []AwardWinner{}, fmt.Errorf("error parsing doc: %v", err)
 	}
-	// bodyBytes, _ := io.ReadAll(resp.Body)
-	// rawHtml := string(bodyBytes)
-	// commentMarkersRegex := regexp.MustCompile(`<!--|-->`)
-	// cleanHtml := commentMarkersRegex.ReplaceAllString(rawHtml, "")
-	// err = os.WriteFile("output.html", []byte(cleanHtml), 0644)
 
-	////
-
+	// Take placeholder data because real is loaded dynamically
+	// *appears to always be up to date
 	divSelection := doc.Find("#all_awards")
-
 	html, err := divSelection.Html()
-	err = os.WriteFile("output.html", []byte(html), 0644)
-	// divSelection.SetHtml("Hello World")
-	// html, err = divSelection.Html()
+	if err != nil {
+		return []AwardWinner{}, fmt.Errorf("error parsing HTML: %v", err)
+	}
 
-	commentMarkersRegex := regexp.MustCompile(`<!--|-->`)
+	// Clean html, remove comment symbols and ":"
+	commentMarkersRegex := regexp.MustCompile(`<!--|-->|:`)
 	cleanHtml := commentMarkersRegex.ReplaceAllString(html, "")
 
-	err = os.WriteFile("outputCLEAN.html", []byte(cleanHtml), 0644)
-
-	////
-
+	// Create new doc from parsed and cleaned HTML comment
 	doc, err = goquery.NewDocumentFromReader(strings.NewReader(cleanHtml))
+	if err != nil {
+		return []AwardWinner{}, fmt.Errorf("error cleaning HTML: %v", err)
+	}
 	divSelection = doc.Find("#div_awards")
+
+	// Setup result values
 	var awardWinners []AwardWinner
+	var awardWinnerHolder AwardWinner
 
 	// Extract awards and winners
-	fmt.Println(divSelection.Contents().Length())
+	isCategory := true
 	divSelection.Contents().Each(func(i int, s *goquery.Selection) {
-
-		fmt.Printf("Reaching section: %s\n", s.Text())
+		if strings.TrimSpace(s.Text()) != "" {
+			if isCategory {
+				awardWinnerHolder.Award = s.Text()
+			} else {
+				awardWinnerHolder.Winner = s.Text()
+				awardWinners = append(awardWinners, awardWinnerHolder)
+			}
+			isCategory = !isCategory
+		}
 	})
 
 	if len(awardWinners) == 0 {
-		return nil, fmt.Errorf("no award winners found")
+		return []AwardWinner{}, fmt.Errorf("no award winners found")
 	}
 
 	return awardWinners, nil

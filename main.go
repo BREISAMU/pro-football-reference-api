@@ -203,6 +203,7 @@ func getDivisionStandings(c *gin.Context) {
 	}
 }
 
+// **** Award winners are generated dynamically, this script gets placeholder values which are correct as of 3/5/2025 ****
 /*
 Gets list of award winners for a season, see "https://www.pro-football-reference.com/years/2003/" award winners list with param 2003
 Specify:
@@ -219,7 +220,6 @@ func getSeasonAwardWinners(c *gin.Context) {
 	}
 
 	c.IndentedJSON(http.StatusOK, data)
-
 }
 
 func main() {

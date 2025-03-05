@@ -6,3 +6,6 @@ raw.html
 dockerbuild.*
 *.pem
 setup.sh
+
+## temp maybe
+*.html
